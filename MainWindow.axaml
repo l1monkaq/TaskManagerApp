@@ -1,0 +1,128 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:TaskManagerApp.Models"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="650"
+        x:Class="TaskManagerApp.MainWindow"
+        Title="Менеджер завдань (Avalonia UI)"
+        Width="580" Height="620"
+        MinWidth="450" MinHeight="450"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto" Margin="20">
+        <!-- 1. Заголовок програми -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="📋 Менеджер завдань" 
+                       FontSize="22" 
+                       FontWeight="Bold" />
+            <TextBlock Text="Кросплатформний GUI-застосунок на C# (.NET) з використанням Avalonia UI" 
+                       FontSize="12" 
+                       Opacity="0.7" 
+                       Margin="0,4,0,0" />
+        </StackPanel>
+
+        <!-- 2. Поле введення та кнопка 'Додати' -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+            <TextBox x:Name="TaskInputTextBox" 
+                     Grid.Column="0" 
+                     PlaceholderText="Введіть нове завдання..." 
+                     Height="38" 
+                     VerticalContentAlignment="Center"
+                     KeyDown="OnTaskInputKeyDown" />
+            
+            <Button x:Name="AddTaskButton" 
+                    Grid.Column="1" 
+                    Content="➕ Додати" 
+                    Click="OnAddTaskClicked" 
+                    Margin="10,0,0,0" 
+                    Height="38" 
+                    Padding="16,0" 
+                    FontWeight="SemiBold" />
+        </Grid>
+
+        <!-- 3. Повідомлення валідації порожнього введення -->
+        <TextBlock x:Name="ValidationMessageTextBlock" 
+                   Grid.Row="2" 
+                   Text="⚠️ Завдання не може бути порожнім! Введіть назву." 
+                   Foreground="#E53935" 
+                   FontSize="12" 
+                   FontWeight="Medium" 
+                   Margin="2,6,0,2" 
+                   IsVisible="False" />
+
+        <!-- 4. Список завдань -->
+        <Border Grid.Row="3" 
+                BorderBrush="#40808080" 
+                BorderThickness="1" 
+                CornerRadius="6" 
+                Margin="0,10,0,10"
+                Padding="4">
+            <ListBox x:Name="TasksListBox" 
+                     SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:TaskItem">
+                        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                            <!-- Прапорець виконання завдання -->
+                            <CheckBox Grid.Column="0" 
+                                      IsChecked="{Binding IsCompleted, Mode=TwoWay}" 
+                                      VerticalAlignment="Center" 
+                                      Margin="4,0,8,0" />
+
+                            <!-- Назва завдання -->
+                            <TextBlock Grid.Column="1" 
+                                       Text="{Binding Title}" 
+                                       VerticalAlignment="Center" 
+                                       FontSize="14" 
+                                       TextWrapping="Wrap" />
+
+                            <!-- Кнопка видалення конкретного елемента -->
+                            <Button Grid.Column="2" 
+                                    Content="🗑️" 
+                                    Click="OnDeleteSingleTaskClicked" 
+                                    Tag="{Binding}" 
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    Padding="6,4" 
+                                    ToolTip.Tip="Видалити це завдання" 
+                                    Margin="8,0,4,0" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!-- 5. Кнопки управління списком -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,12">
+            <Button x:Name="DeleteSelectedButton" 
+                    Content="🗑️ Видалити вибране" 
+                    Click="OnDeleteSelectedClicked" 
+                    Margin="0,0,10,0" />
+            
+            <Button x:Name="ClearCompletedButton" 
+                    Content="🧹 Очистити виконані" 
+                    Click="OnClearCompletedClicked" />
+        </StackPanel>
+
+        <!-- 6. Додаткове завдання: Лічильник невиконаних завдань -->
+        <Border Grid.Row="5" 
+                Background="#18808080" 
+                CornerRadius="6" 
+                Padding="12,10">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock x:Name="CounterTextBlock" 
+                           Grid.Column="0" 
+                           Text="Невиконаних завдань: 0" 
+                           FontWeight="SemiBold" 
+                           VerticalAlignment="Center" />
+
+                <TextBlock x:Name="TotalStatsTextBlock" 
+                           Grid.Column="1" 
+                           Text="Всього: 0 | Виконано: 0" 
+                           FontSize="12" 
+                           Opacity="0.8" 
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
